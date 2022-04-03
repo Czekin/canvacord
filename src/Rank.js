@@ -52,7 +52,7 @@ const assets = require("./Assets");
  * @property {string} [currentXP.color="#FFFFFF"] Rank card current xp color
  * @property {object} requiredXP Rank card required xp
  * @property {number} [requiredXP.data=0] required xp
- * @property {string} [requiredXP.color="#FFFFFF"] Rank card required xp color
+ * @property {string} [requiredXP.color="rgba(255, 255, 255, 0.4)"] Rank card required xp color
  * @property {object} discriminator Rank card discriminator
  * @property {number|string} [discriminator.discrim=null] The discriminator
  * @property {string} [discriminator.color="rgba(255, 255, 255, 0.4)"] Rank card discriminator color
@@ -146,7 +146,7 @@ class Rank {
             },
             requiredXP: {
                 data: 0,
-                color: "#FFFFFF"
+                color: "rgba(255, 255, 255, 0.4)"
             },
             discriminator: {
                 discrim: null,
@@ -291,10 +291,10 @@ class Rank {
      * @param {string} color Color
      * @returns {Rank}
      */
-    setRequiredXP(data, color = "#FFFFFF") {
+    setRequiredXP(data, color = this.data.requiredXP.color) {
         if (typeof data !== "number") throw new Error(`Required xp data type must be a number, received ${typeof data}!`);
         this.data.requiredXP.data = data;
-        this.data.requiredXP.color = color && typeof color === "string" ? color : "#FFFFFF";
+        this.data.requiredXP.color = color && typeof color === "string" ? color : this.data.requiredXP.color;
         return this;
     }
 
@@ -392,7 +392,7 @@ class Rank {
      * @returns {Rank}
      */
     setStatus(status, circle = false, width = 5) {
-        switch(status) {
+        switch (status) {
             case "online":
                 this.data.status.type = "online";
                 this.data.status.color = "#43B581";
@@ -432,7 +432,7 @@ class Rank {
      */
     setBackground(type, data) {
         if (!data) throw new Error("Missing field : data");
-        switch(type) {
+        switch (type) {
             case "COLOR":
                 this.data.background.type = "color";
                 this.data.background.image = data && typeof data === "string" ? data : "#23272A";
@@ -502,7 +502,7 @@ class Rank {
         ctx.font = `bold 36px ${ops.fontX}`;
         ctx.fillStyle = this.data.username.color;
         ctx.textAlign = "start";
-        const name = Util.shorten(this.data.username.name, 10);
+        const name = Util.shorten(this.data.username.name, 17);
 
         // apply username
         !this.data.renderEmojis ? ctx.fillText(`${name}`, 257 + 18.5, 164) : await Util.renderEmoji(ctx, name, 257 + 18.5, 164);
@@ -511,42 +511,43 @@ class Rank {
         if (!this.data.discriminator.discrim) throw new Error("Missing discriminator!");
         const discrim = `${this.data.discriminator.discrim}`;
         if (discrim) {
-            ctx.font = `36px ${ops.fontY}`;
+            ctx.font = `bold 25px ${ops.fontY}`;
             ctx.fillStyle = this.data.discriminator.color;
-            ctx.textAlign = "center";
-            ctx.fillText(`#${discrim.substr(0, 4)}`, ctx.measureText(name).width + 20 + 335, 164);
+            ctx.textAlign = "start";
+            ctx.fillText(`#${discrim.substr(0, 4)}`, 257 + 18.5, 120);
         }
 
         // fill level
         if (this.data.level.display && !isNaN(this.data.level.data)) {
-            ctx.font = `bold 36px ${ops.fontX}`;
+            ctx.font = `bold 25px ${ops.fontX}`;
             ctx.fillStyle = this.data.level.textColor;
-            ctx.fillText(this.data.level.displayText, 800 - ctx.measureText(Util.toAbbrev(parseInt(this.data.level.data))).width, 82);
+            ctx.fillText(this.data.level.displayText, 700, 82);
 
-            ctx.font = `bold 32px ${ops.fontX}`;
+            ctx.font = `bold 60px ${ops.fontX}`;
             ctx.fillStyle = this.data.level.color;
-            ctx.textAlign = "end";
-            ctx.fillText(Util.toAbbrev(parseInt(this.data.level.data)), 860, 82);
+            ctx.textAlign = "start";
+            ctx.fillText(Util.toAbbrev(parseInt(this.data.level.data)), 790, 82);
         }
 
         // fill rank
         if (this.data.rank.display && !isNaN(this.data.rank.data)) {
-            ctx.font = `bold 36px ${ops.fontX}`;
+            ctx.font = `bold 25px ${ops.fontX}`;
             ctx.fillStyle = this.data.rank.textColor;
-            ctx.fillText(this.data.rank.displayText, 800 - ctx.measureText(Util.toAbbrev(parseInt(this.data.level.data)) || "-").width - 7 - ctx.measureText(this.data.level.displayText).width - 7 - ctx.measureText(Util.toAbbrev(parseInt(this.data.rank.data)) || "-").width, 82);
+            ctx.textAlign = 'end';
+            ctx.fillText(this.data.rank.displayText, 630 - (ctx.measureText(`#${Util.toAbbrev(parseInt(this.data.rank.data)) || "-"}`).width * 2), 82);
 
-            ctx.font = `bold 32px ${ops.fontX}`;
+            ctx.font = `bold 60px ${ops.fontX}`;
             ctx.fillStyle = this.data.rank.color;
             ctx.textAlign = "end";
-            ctx.fillText(Util.toAbbrev(parseInt(this.data.rank.data)), 790 - ctx.measureText(Util.toAbbrev(parseInt(this.data.level.data)) || "-").width - 7 - ctx.measureText(this.data.level.displayText).width, 82);
+            ctx.fillText(`#${Util.toAbbrev(parseInt(this.data.rank.data))}`, 670, 82);
         }
 
         // show progress
         ctx.font = `bold 30px ${ops.fontX}`;
         ctx.fillStyle = this.data.requiredXP.color;
         ctx.textAlign = "start";
-        ctx.fillText("/ " + Util.toAbbrev(this.data.requiredXP.data), 670 + ctx.measureText(Util.toAbbrev(this.data.currentXP.data)).width + 15, 164);
-        
+        ctx.fillText("/ " + Util.toAbbrev(this.data.requiredXP.data) + "  XP", 670 + ctx.measureText(Util.toAbbrev(this.data.currentXP.data)).width + 15, 164);
+
         ctx.fillStyle = this.data.currentXP.color;
         ctx.fillText(Util.toAbbrev(this.data.currentXP.data), 670, 164);
 

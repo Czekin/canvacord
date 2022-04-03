@@ -498,6 +498,10 @@ class Rank {
         // reset transparency
         ctx.globalAlpha = 1;
 
+        // red cool border
+        ctx.strokeStyle = '#ff0000';
+        ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+
         // draw username
         ctx.font = `bold 36px ${ops.fontX}`;
         ctx.fillStyle = this.data.username.color;

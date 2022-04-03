@@ -606,19 +606,19 @@ class Rank {
         ctx.restore();
 
         // draw status
-        if (!!this.data.status.circle) {
-            ctx.beginPath();
-            ctx.fillStyle = this.data.status.color;
-            ctx.arc(215, 205, 20, 0, 2 * Math.PI);
-            ctx.fill();
-            ctx.closePath();
-        } else if (!this.data.status.circle && this.data.status.width !== false) {
-            ctx.beginPath();
-            ctx.arc(135, 145, 100, 0, Math.PI * 2, true);
-            ctx.strokeStyle = this.data.status.color;
-            ctx.lineWidth = this.data.status.width;
-            ctx.stroke();
-        }
+        // if (!!this.data.status.circle) {
+        //     ctx.beginPath();
+        //     ctx.fillStyle = this.data.status.color;
+        //     ctx.arc(215, 205, 20, 0, 2 * Math.PI);
+        //     ctx.fill();
+        //     ctx.closePath();
+        // } else if (!this.data.status.circle && this.data.status.width !== false) {
+        //     ctx.beginPath();
+        //     ctx.arc(135, 145, 100, 0, Math.PI * 2, true);
+        //     ctx.strokeStyle = this.data.status.color;
+        //     ctx.lineWidth = this.data.status.width;
+        //     ctx.stroke();
+        // }
 
         return canvas.toBuffer();
     }
